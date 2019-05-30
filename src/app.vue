@@ -34,6 +34,12 @@ export default {
 // https://github.com/rstacruz/nprogress
 @import '~nprogress/nprogress.css';
 
+// Bootstrap 4
+@import '~bootstrap/scss/bootstrap.scss';
+
+// Fontawesome
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
 // Design variables and utilities from src/design.
 @import '@design';
 

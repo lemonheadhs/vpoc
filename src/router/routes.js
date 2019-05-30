@@ -61,6 +61,24 @@ export default [
     props: (route) => ({ user: route.params.user }),
   },
   {
+    path: '/sample-form',
+    name: 'sampleForm',
+    component: () => lazyLoadView(import('@views/sampleForm')),
+    meta: {
+      authRequired: true,
+    },
+    props: (route) => ({ user: store.state.auth.currentUser || {} }),
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => lazyLoadView(import('@views/searchBooks')),
+    meta: {
+      authRequired: true,
+    },
+    props: (route) => ({ user: store.state.auth.currentUser || {} }),
+  },
+  {
     path: '/logout',
     name: 'logout',
     meta: {

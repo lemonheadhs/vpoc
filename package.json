@@ -30,6 +30,7 @@
     "pre-commit": "cross-env PRE_COMMIT=true lint-staged"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "5.8.2",
     "@fortawesome/fontawesome-svg-core": "1.2.17",
     "@fortawesome/free-solid-svg-icons": "5.8.1",
     "@fortawesome/vue-fontawesome": "0.1.6",
@@ -40,7 +41,8 @@
     "vue": "2.6.10",
     "vue-meta": "1.6.0",
     "vue-router": "3.0.6",
-    "vuex": "3.1.0"
+    "vuex": "3.1.0",
+    "bootstrap": "4.3.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "3.7.x",
@@ -72,7 +74,8 @@
     "stylelint-config-standard": "18.3.x",
     "stylelint-scss": "3.6.x",
     "vue-template-compiler": "2.6.10",
-    "vuepress": "0.14.x"
+    "vuepress": "0.14.x",
+    "autoprefixer": "9.5.1"
   },
   "engines": {
     "node": ">=10.13.3",
