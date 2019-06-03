@@ -10,7 +10,7 @@ export default {
   <div :class="$style.container">
     <NavBar />
     <div class="list-group" :class="$style.leftMenu">
-      <baseLink name="home" class="list-group-item" exact="active"
+      <baseLink name="home" class="list-group-item" exact active-class="active"
         ><i class="fa fa-home"></i> <span>Home</span></baseLink
       >
       <baseLink name="sampleForm" class="list-group-item" active-class="active"

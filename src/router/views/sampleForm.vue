@@ -1,6 +1,8 @@
 <script>
 import appConfig from '@src/app.config'
 import Layout from '@layouts/main'
+import { required, maxLength, integer } from 'vuelidate/lib/validators'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   page: {
@@ -8,6 +10,71 @@ export default {
     meta: [{ name: 'description', content: appConfig.description }],
   },
   components: { Layout },
+  data() {
+    return {
+      firstName: '',
+      lastName: '',
+      username: '',
+      city: '',
+      state: '',
+      zip: 0,
+      agreed: false,
+    }
+  },
+  validations: {
+    firstName: {
+      required,
+      maxLength: maxLength(20),
+    },
+    lastName: {
+      required,
+      maxLength: maxLength(20),
+    },
+    username: {
+      required,
+      maxLength: maxLength(20),
+    },
+    city: {
+      //
+    },
+    state: {
+      //
+    },
+    zip: {
+      integer,
+    },
+    agreed: {
+      mustBeTrue: (value) => value === true,
+    },
+  },
+  ...mapState('sampleForm', {
+    created(state) {
+      this.firstName = state.firstName
+      this.lastName = state.lastName
+      this.username = state.username
+      this.city = state.city
+      this.state = state.state
+      this.zip = state.zip
+      this.agreed = state.agreed
+    },
+  }),
+  methods: {
+    ...mapMutations({ saveForm: 'sampleForm/saveForm' }),
+    save() {
+      if (this.$v.$invalid) {
+        return
+      }
+      this.saveForm({
+        firstName: this.firstName,
+        lastName: this.lastName,
+        username: this.username,
+        city: this.city,
+        state: this.state,
+        zip: this.zip,
+        agreed: this.agreed,
+      })
+    },
+  },
 }
 </script>
 
@@ -17,34 +84,44 @@ export default {
 
     <Div class="container">
       <div class="col-md-8">
-        <form class="needs-validation" novalidate>
+        <form class="needs-validation" novalidate nosubmit>
           <div class="form-row">
             <div class="col-md-4 mb-3">
-              <label for="validationCustom01">First name</label>
+              <label for="validationCustom01" :class="$style.required"
+                >First name</label
+              >
               <input
                 id="validationCustom01"
+                v-model.trim="$v.firstName.$model"
                 type="text"
                 class="form-control"
                 placeholder="First name"
-                value="Mark"
-                required
+                :class="{ 'is-invalid': $v.firstName.$invalid }"
               />
-              <div class="valid-feedback">
-                Looks good!
+              <div v-if="!$v.firstName.required" class="invalid-feedback">
+                Required.
+              </div>
+              <div v-if="!$v.firstName.maxLength" class="invalid-feedback">
+                Length should less then 20.
               </div>
             </div>
             <div class="col-md-4 mb-3">
-              <label for="validationCustom02">Last name</label>
+              <label for="validationCustom02" :class="$style.required"
+                >Last name</label
+              >
               <input
                 id="validationCustom02"
+                v-model.trim="$v.lastName.$model"
                 type="text"
                 class="form-control"
                 placeholder="Last name"
-                value="Otto"
-                required
+                :class="{ 'is-invalid': $v.lastName.$invalid }"
               />
-              <div class="valid-feedback">
-                Looks good!
+              <div v-if="!$v.lastName.required" class="invalid-feedback">
+                Required.
+              </div>
+              <div v-if="!$v.lastName.maxLength" class="invalid-feedback">
+                Length should less then 20.
               </div>
             </div>
             <div class="col-md-4 mb-3">
@@ -55,14 +132,18 @@ export default {
                 </div>
                 <input
                   id="validationCustomUsername"
+                  v-model.trim="$v.username.$model"
                   type="text"
                   class="form-control"
                   placeholder="Username"
                   aria-describedby="inputGroupPrepend"
-                  required
+                  :class="{ 'is-invalid': $v.username.$invalid }"
                 />
-                <div class="invalid-feedback">
-                  Please choose a username.
+                <div v-if="!$v.username.required" class="invalid-feedback">
+                  Required.
+                </div>
+                <div v-if="!$v.username.maxLength" class="invalid-feedback">
+                  Length should less then 20.
                 </div>
               </div>
             </div>
@@ -72,10 +153,10 @@ export default {
               <label for="validationCustom03">City</label>
               <input
                 id="validationCustom03"
+                v-model.trim="$v.city.$model"
                 type="text"
                 class="form-control"
                 placeholder="City"
-                required
               />
               <div class="invalid-feedback">
                 Please provide a valid city.
@@ -85,10 +166,10 @@ export default {
               <label for="validationCustom04">State</label>
               <input
                 id="validationCustom04"
+                v-model.trim="$v.state.$model"
                 type="text"
                 class="form-control"
                 placeholder="State"
-                required
               />
               <div class="invalid-feedback">
                 Please provide a valid state.
@@ -98,12 +179,13 @@ export default {
               <label for="validationCustom05">Zip</label>
               <input
                 id="validationCustom05"
+                v-model.trim="$v.zip.$model"
                 type="text"
                 class="form-control"
                 placeholder="Zip"
-                required
+                :class="{ 'is-invalid': $v.zip.$invalid }"
               />
-              <div class="invalid-feedback">
+              <div v-if="$v.zip.$invalid" class="invalid-feedback">
                 Please provide a valid zip.
               </div>
             </div>
@@ -112,22 +194,37 @@ export default {
             <div class="form-check">
               <input
                 id="invalidCheck"
+                v-model="$v.agreed.$model"
                 class="form-check-input"
                 type="checkbox"
-                value=""
-                required
+                :class="{ 'is-invalid': $v.agreed.$invalid }"
               />
               <label class="form-check-label" for="invalidCheck">
                 Agree to terms and conditions
               </label>
-              <div class="invalid-feedback">
+              <div v-if="$v.agreed.$invalid" class="invalid-feedback">
                 You must agree before submitting.
               </div>
             </div>
           </div>
-          <button class="btn btn-primary" type="submit">Submit form</button>
+          <button
+            class="btn btn-primary"
+            type="button"
+            :disabled="$v.$invalid"
+            @click="save"
+            >Submit form</button
+          >
         </form>
       </div>
     </Div>
   </Layout>
 </template>
+
+<style lang="scss" module>
+@import '@design';
+
+.required::after {
+  color: red;
+  content: '*';
+}
+</style>
