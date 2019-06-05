@@ -96,7 +96,9 @@ export default {
                 type="text"
                 class="form-control"
                 placeholder="First name"
-                :class="{ 'is-invalid': $v.firstName.$invalid }"
+                :class="{
+                  'is-invalid': $v.firstName.$invalid && $v.firstName.$dirty,
+                }"
               />
               <div v-if="!$v.firstName.required" class="invalid-feedback">
                 Required.
@@ -115,7 +117,9 @@ export default {
                 type="text"
                 class="form-control"
                 placeholder="Last name"
-                :class="{ 'is-invalid': $v.lastName.$invalid }"
+                :class="{
+                  'is-invalid': $v.lastName.$invalid && $v.lastName.$dirty,
+                }"
               />
               <div v-if="!$v.lastName.required" class="invalid-feedback">
                 Required.
@@ -137,7 +141,9 @@ export default {
                   class="form-control"
                   placeholder="Username"
                   aria-describedby="inputGroupPrepend"
-                  :class="{ 'is-invalid': $v.username.$invalid }"
+                  :class="{
+                    'is-invalid': $v.username.$invalid && $v.username.$dirty,
+                  }"
                 />
                 <div v-if="!$v.username.required" class="invalid-feedback">
                   Required.
@@ -158,9 +164,6 @@ export default {
                 class="form-control"
                 placeholder="City"
               />
-              <div class="invalid-feedback">
-                Please provide a valid city.
-              </div>
             </div>
             <div class="col-md-3 mb-3">
               <label for="validationCustom04">State</label>
@@ -171,9 +174,6 @@ export default {
                 class="form-control"
                 placeholder="State"
               />
-              <div class="invalid-feedback">
-                Please provide a valid state.
-              </div>
             </div>
             <div class="col-md-3 mb-3">
               <label for="validationCustom05">Zip</label>
@@ -183,7 +183,7 @@ export default {
                 type="text"
                 class="form-control"
                 placeholder="Zip"
-                :class="{ 'is-invalid': $v.zip.$invalid }"
+                :class="{ 'is-invalid': $v.zip.$invalid && $v.zip.$dirty }"
               />
               <div v-if="$v.zip.$invalid" class="invalid-feedback">
                 Please provide a valid zip.
@@ -197,7 +197,9 @@ export default {
                 v-model="$v.agreed.$model"
                 class="form-check-input"
                 type="checkbox"
-                :class="{ 'is-invalid': $v.agreed.$invalid }"
+                :class="{
+                  'is-invalid': $v.agreed.$invalid && $v.agreed.$dirty,
+                }"
               />
               <label class="form-check-label" for="invalidCheck">
                 Agree to terms and conditions
