@@ -1,6 +1,7 @@
 <script>
 import appConfig from '@src/app.config'
 import Layout from '@layouts/main'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   page: {
@@ -8,6 +9,26 @@ export default {
     meta: [{ name: 'description', content: appConfig.description }],
   },
   components: { Layout },
+  data: function() {
+    return {
+      searchStr: '',
+    }
+  },
+  computed: {
+    ...mapState('search', {
+      totalCount: (state) => state.totalCount,
+      currentIndex: (state) => state.pageIndex,
+      bookList: (state) => state.currentPage,
+    }),
+  },
+  ...mapState('search', {
+    created(state) {
+      this.searchStr = state.titlePortion
+    },
+  }),
+  methods: {
+    ...mapActions('search', ['searchTitle', 'goToPage']),
+  },
 }
 </script>
 
@@ -22,13 +43,19 @@ export default {
           <div :class="$style['custom-search-input']">
             <div class="input-group">
               <input
+                v-model.trim="searchStr"
                 type="text"
                 class="form-control"
                 :class="$style['search-query']"
                 placeholder="Search"
+                @keyup.enter="searchTitle(searchStr)"
               />
               <span class="input-group-btn">
-                <button :class="$style['search-button']" type="button" disabled>
+                <button
+                  :class="$style['search-button']"
+                  type="button"
+                  @click="searchTitle(searchStr)"
+                >
                   <span class="fa fa-search"></span>
                 </button>
               </span>
@@ -54,9 +81,9 @@ export default {
                 :class="$style['list-group-item']"
               >
                 <div class="row">
-                  <div class="col-6 text-left">Name</div>
-                  <div class="col-3">Size</div>
-                  <div class="col-3">Modified</div>
+                  <div class="col-6 text-left">Title</div>
+                  <div class="col-3">Author</div>
+                  <div class="col-3">Publisher</div>
                 </div>
               </li>
             </ul>
@@ -64,7 +91,12 @@ export default {
               class="list-group list-group-body"
               :class="$style['list-group-body']"
             >
-              <li class="list-group-item" :class="$style['list-group-item']">
+              <li
+                v-for="book in bookList"
+                :key="book.title"
+                class="list-group-item"
+                :class="$style['list-group-item']"
+              >
                 <div class="row">
                   <div class="col-6 text-left">
                     <a
@@ -73,43 +105,11 @@ export default {
                         :class="$style.glyphicon"
                         aria-hidden="true"
                       ></span>
-                      App Icon
+                      {{ book.title }}
                     </a>
                   </div>
-                  <div class="col-3">...</div>
-                  <div class="col-3">...</div>
-                </div>
-              </li>
-              <li class="list-group-item" :class="$style['list-group-item']">
-                <div class="row">
-                  <div class="col-6 text-left">
-                    <a
-                      ><span
-                        class="fa fa-file"
-                        :class="$style.glyphicon"
-                        aria-hidden="true"
-                      ></span>
-                      App Icon
-                    </a>
-                  </div>
-                  <div class="col-3">...</div>
-                  <div class="col-3">...</div>
-                </div>
-              </li>
-              <li class="list-group-item" :class="$style['list-group-item']">
-                <div class="row">
-                  <div class="col-6 text-left">
-                    <a
-                      ><span
-                        class="fa fa-file"
-                        :class="$style.glyphicon"
-                        aria-hidden="true"
-                      ></span>
-                      App Icon
-                    </a>
-                  </div>
-                  <div class="col-3">...</div>
-                  <div class="col-3">...</div>
+                  <div class="col-3">{{ book.author }}</div>
+                  <div class="col-3">{{ book.publisher }}</div>
                 </div>
               </li>
             </ul>
@@ -117,6 +117,19 @@ export default {
         </div>
       </div>
     </div>
+    <nav>
+      <ul class="pagination">
+        <li class="page-item" :class="{ disabled: currentIndex === 0 }">
+          <a class="page-link" @click="gotToPage(currentIndex - 1)">Previous</a>
+        </li>
+        <li
+          class="page-item"
+          :class="{ disabled: Math.ceil(totalCount / 20) === currentIndex }"
+        >
+          <a class="page-link" @click="goToPage(currentIndex + 1)">Next</a>
+        </li>
+      </ul>
+    </nav>
   </Layout>
 </template>
 
