@@ -67,11 +67,12 @@ export default {
 
     <div class="row">
       <div class="col-12">
-        <div
-          class="panel panel-default list-group-panel"
-          :class="$style['list-group-panel']"
-        >
-          <div class="panel-body">
+        <div class="panel panel-default list-group-panel">
+          <div
+            class="panel-body"
+            style="background-color: white"
+            :class="$style['panel-body']"
+          >
             <ul
               class="list-group list-group-header"
               :class="$style['list-group-header']"
@@ -81,7 +82,8 @@ export default {
                 :class="$style['list-group-item']"
               >
                 <div class="row">
-                  <div class="col-6 text-left">Title</div>
+                  <div class="col-1"></div>
+                  <div class="col-5 text-left">Title</div>
                   <div class="col-3">Author</div>
                   <div class="col-3">Publisher</div>
                 </div>
@@ -92,13 +94,14 @@ export default {
               :class="$style['list-group-body']"
             >
               <li
-                v-for="book in bookList"
+                v-for="(book, i) in bookList"
                 :key="book.title"
                 class="list-group-item"
                 :class="$style['list-group-item']"
               >
                 <div class="row">
-                  <div class="col-6 text-left">
+                  <div class="col-1">{{ 1 + i + 20 * currentIndex }}</div>
+                  <div class="col-5 text-left">
                     <a
                       ><span
                         class="fa fa-file"
@@ -119,15 +122,25 @@ export default {
     </div>
     <nav>
       <ul class="pagination">
-        <li class="page-item" :class="{ disabled: currentIndex === 0 }">
-          <a class="page-link" @click="gotToPage(currentIndex - 1)">Previous</a>
+        <li class="page-item" :class="{ disabled: currentIndex <= 0 }">
+          <a
+            class="page-link"
+            type="button"
+            @click="gotToPage(currentIndex - 1)"
+            >Previous</a
+          >
         </li>
         <li
           class="page-item"
-          :class="{ disabled: Math.ceil(totalCount / 20) === currentIndex }"
+          :class="{ disabled: Math.ceil(totalCount / 20) <= currentIndex + 1 }"
         >
-          <a class="page-link" @click="goToPage(currentIndex + 1)">Next</a>
+          <a class="page-link" type="button" @click="goToPage(currentIndex + 1)"
+            >Next</a
+          >
         </li>
+        <span style="padding-left: 15px;padding-top:10px"
+          >Total: {{ totalCount }}</span
+        >
       </ul>
     </nav>
   </Layout>
@@ -202,7 +215,7 @@ export default {
   font-size: 25px;
   vertical-align: middle;
 }
-.list-group-panel {
+.panel-body {
   padding-left: 15px;
   border: 1px solid #ccdbeb;
   border-radius: 0;

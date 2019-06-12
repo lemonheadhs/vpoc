@@ -12,15 +12,13 @@ export const mutations = {
   updateWithSearchResult(
     state,
     // eslint-disable-next-line camelcase
-    { num_results, results },
-    titlePortion,
-    pageIndex
+    { num_results, results, titlePortion, pageIndex }
   ) {
     state.titlePortion = titlePortion
     state.pageIndex = pageIndex
     // eslint-disable-next-line camelcase
     state.totalCount = num_results
-    state.currentPage = results.forEach((book) => {
+    state.currentPage = results.map((book) => {
       return {
         title: book.title,
         author: book.author,
@@ -42,9 +40,24 @@ export const actions = {
       titlePortion: title || '',
       pageIndex: 0,
     })
-    let result = await axios.get(searchUrl).then((resp) => resp.data)
+    let result = await axios
+      .get(searchUrl, {
+        transformRequest: [
+          function(data, headers) {
+            delete headers.common.Authorization
+            return data
+          },
+        ],
+      })
+      .then((resp) => {
+        return resp.data
+      })
 
-    commit('updateWithSearchResult', result, title, 0)
+    commit('updateWithSearchResult', {
+      ...result,
+      titlePortion: title,
+      pageIndex: 0,
+    })
   },
   async goToPage({ state, commit }, index) {
     if (index < 0 || Math.ceil(state.totalCount / 20) < index) {
@@ -54,8 +67,21 @@ export const actions = {
       titlePortion: state.titlePortion,
       pageIndex: index,
     })
-    let result = await axios.get(searchUrl).then((resp) => resp.data)
+    let result = await axios
+      .get(searchUrl, {
+        transformRequest: [
+          function(data, headers) {
+            delete headers.common.Authorization
+            return data
+          },
+        ],
+      })
+      .then((resp) => resp.data)
 
-    commit('updateWithSearchResult', result, state.titlePortion, index)
+    commit('updateWithSearchResult', {
+      ...result,
+      titlePortion: state.titlePortion,
+      pageIndex: index,
+    })
   },
 }

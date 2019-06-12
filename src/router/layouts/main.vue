@@ -1,15 +1,19 @@
 <script>
 import NavBar from '@components/nav-bar'
+import { mapGetters } from 'vuex'
 
 export default {
   components: { NavBar },
+  computed: {
+    ...mapGetters('auth', ['loggedIn']),
+  },
 }
 </script>
 
 <template>
   <div :class="$style.container">
     <NavBar />
-    <div class="list-group" :class="$style.leftMenu">
+    <div v-if="loggedIn" class="list-group" :class="$style.leftMenu">
       <baseLink name="home" class="list-group-item" exact active-class="active"
         ><i class="fa fa-home"></i> <span>Home</span></baseLink
       >
